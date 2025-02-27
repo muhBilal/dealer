@@ -47,10 +47,14 @@
                     <label class="block text-gray-700">Warna</label>
                     <input type="text" name="details[0][warna]" class="w-full px-3 py-2 border border-gray-300 rounded">
                 </div>
+                <div class="mb-2">
+                    <label class="block text-gray-700">Price</label>
+                    <input type="number" name="details[0][price]" class="w-full px-
+                    3 py-2 border border-gray-300 rounded">
+                </div>
                 <button type="button" class="btn btn-danger">-</button>
             </div>
         </div>
-        {{-- <button type="button" id="addDetail" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4">+ Add Detail</button> --}}
         <button type="button" id="addDetail" class="btn btn-success">+ Add Detail</button>
         
         <button type="submit" class="btn btn-primary">Save</button>
@@ -84,6 +88,10 @@
                     <div class="mb-2">
                         <label class="block text-gray-700">Warna</label>
                         <input type="text" name="details[${detailIndex}][warna]" class="w-full px-3 py-2 border border-gray-300 rounded">
+                    </div>
+                    <div class="mb-2">
+                        <label class="block text-gray-700">Price</label>
+                        <input type="number" name="details[${detailIndex}][price]" class="w-full px-3 py-2 border border-gray-300 rounded">
                     </div>
                     <button type="button" class="remove-detail bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-2">-</button>
                 </div>`;

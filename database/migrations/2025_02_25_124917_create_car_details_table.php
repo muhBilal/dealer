@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('fitur')->nullable();
             $table->integer('stok')->default(0);
             $table->string('warna');
+            $table->decimal('price', 40, 2);
             $table->timestamps();
         });
     }

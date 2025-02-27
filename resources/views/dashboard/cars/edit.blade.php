@@ -65,6 +65,10 @@
                         value="{{ $detail->warna }}" placeholder="Warna"
                         class="block w-full border rounded-md p-2 mb-2">
 
+                    <input type="number" name="details[{{ $key }}][price]"
+                        value="{{ $detail->price }}" placeholder="Price"
+                        class="block w-full border rounded-md p-2 mb-2">
+
                     <button type="button" class="remove-detail btn btn-danger">Remove</button>
                 </div>
                 @endforeach
@@ -91,6 +95,7 @@
                     <input type="text" name="details[${index}][fitur]" placeholder="Fitur" class="block w-full border rounded-md p-2 mb-2">
                     <input type="number" name="details[${index}][stok]" placeholder="Stok" class="block w-full border rounded-md p-2 mb-2">
                     <input type="text" name="details[${index}][warna]" placeholder="Warna" class="block w-full border rounded-md p-2 mb-2">
+                    <input type="number" name="details[${index}][price]" placeholder="Price" class="block w-full border rounded-md p-2 mb-2">
                     <button type="button" class="remove-detail bg-red-500 text-white rounded-md px-2 py-1 mt-2">Remove</button>
                 </div>`;
             $('#details-container').append(newDetail);

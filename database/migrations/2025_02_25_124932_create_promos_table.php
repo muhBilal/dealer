@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('promos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('car_id')->constrained()->onDelete('cascade'); 
+            $table->foreignId('car_detail_id')->constrained()->onDelete('cascade'); 
             $table->decimal('harga_promo', 10, 2); 
             $table->string('status')->default('active'); 
             $table->date('end_date');

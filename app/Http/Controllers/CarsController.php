@@ -9,62 +9,6 @@ use Illuminate\Support\Facades\Storage;
 
 class CarsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    // public function index()
-    // {
-
-    // }
-
-    // /**
-    //  * Show the form for creating a new resource.
-    //  */
-    // public function create()
-    // {
-    //     // 
-    // }
-
-    // /**
-    //  * Store a newly created resource in storage.
-    //  */
-    // public function store(Request $request)
-    // {
-    //     //
-    // }
-
-    // /**
-    //  * Display the specified resource.
-    //  */
-    // public function show(Cars $cars)
-    // {
-    //     //
-    // }
-
-    // /**
-    //  * Show the form for editing the specified resource.
-    //  */
-    // public function edit(Cars $cars)
-    // {
-    //     //
-    // }
-
-    // /**
-    //  * Update the specified resource in storage.
-    //  */
-    // public function update(Request $request, Cars $cars)
-    // {
-    //     //
-    // }
-
-    // /**
-    //  * Remove the specified resource from storage.
-    //  */
-    // public function destroy(Cars $cars)
-    // {
-    //     //
-    // }
-
     public function index()
     {
         $cars = Cars::all();
@@ -84,13 +28,13 @@ class CarsController extends Controller
             'deskripsi' => 'nullable',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-    
+
         $car = Cars::create([
             'merk' => $request->merk,
             'model' => $request->model,
             'deskripsi' => $request->deskripsi
         ]);
-    
+
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('uploads', 'public');
@@ -102,7 +46,7 @@ class CarsController extends Controller
                 ]);
             }
         }
-    
+
         $detail = $request->details;
         foreach ($detail as $key => $value) {
             DB::table('car_details')->insert([
@@ -110,15 +54,16 @@ class CarsController extends Controller
                 'bahan_bakar' => $value['bahan_bakar'],
                 'transmisi' => $value['transmisi'],
                 'fitur' => $value['fitur'],
-                'stok' => $value['stok'],   
+                'stok' => $value['stok'],
                 'warna' => $value['warna'],
+                'price' => $value['price'],
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
         }
         return redirect()->route('cars.index')->with('success', 'Car added successfully.');
     }
-    
+
 
     public function edit(Cars $car)
     {
@@ -137,154 +82,78 @@ class CarsController extends Controller
         return view('dashboard.cars.edit', compact('car'));
     }
 
-    // public function update(Request $request, Cars $car)
-    // {
-    //     $request->validate([
-    //         'merk' => 'required',
-    //         'model' => 'required',
-    //         'deskripsi' => 'nullable',
-    //     ]);
+    public function update(Request $request, Cars $car)
+    {
+        $request->validate([
+            'merk' => 'required',
+            'model' => 'required',
+            'deskripsi' => 'nullable',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
 
-    //     $car->update($request->all());
+        $car->update([
+            'merk' => $request->merk,
+            'model' => $request->model,
+            'deskripsi' => $request->deskripsi
+        ]);
 
-    //     return redirect()->route('cars.index')->with('success', 'Car updated successfully.');
-    // }
+        if ($request->hasFile('images')) {
+            $oldImages = DB::table('car_gallerys')->where('car_id', $car->id)->get();
+            foreach ($oldImages as $oldImage) {
+                Storage::disk('public')->delete($oldImage->image);
+            }
+            DB::table('car_gallerys')->where('car_id', $car->id)->delete();
 
-//     public function update(Request $request, Cars $car)
-// {
-//     $request->validate([
-//         'merk' => 'required',
-//         'model' => 'required',
-//         'deskripsi' => 'nullable',
-//         'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-//     ]);
-
-//     // Update data utama mobil
-//     $car->update([
-//         'merk' => $request->merk,
-//         'model' => $request->model,
-//         'deskripsi' => $request->deskripsi
-//     ]);
-
-//     // Update gambar
-//     if ($request->hasFile('images')) {
-//         // Hapus gambar lama (opsional)
-//         $oldImages = DB::table('car_gallerys')->where('car_id', $car->id)->get();
-//         foreach ($oldImages as $oldImage) {
-//             Storage::disk('public')->delete($oldImage->image);
-//         }
-//         DB::table('car_gallerys')->where('car_id', $car->id)->delete();
-
-//         // Upload gambar baru
-//         foreach ($request->file('images') as $image) {
-//             $path = $image->store('uploads', 'public');
-//             DB::table('car_gallerys')->insert([
-//                 'car_id' => $car->id,
-//                 'image' => $path,
-//                 'created_at' => now(),
-//                 'updated_at' => now()
-//             ]);
-//         }
-//     }
-
-//     // Update detail
-//     DB::table('car_details')->where('car_id', $car->id)->delete();
-//     if ($request->has('details')) {
-//         $details = $request->details;
-//         foreach ($details as $detail) {
-//             DB::table('car_details')->insert([
-//                 'car_id' => $car->id,
-//                 'bahan_bakar' => $detail['bahan_bakar'],
-//                 'transmisi' => $detail['transmisi'],
-//                 'fitur' => $detail['fitur'],
-//                 'stok' => $detail['stok'],
-//                 'warna' => $detail['warna'],
-//                 'created_at' => now(),
-//                 'updated_at' => now()
-//             ]);
-//         }
-//     }
-
-//     return redirect()->route('cars.index')->with('success', 'Car updated successfully.');
-// }
-public function update(Request $request, Cars $car)
-{
-    $request->validate([
-        'merk' => 'required',
-        'model' => 'required',
-        'deskripsi' => 'nullable',
-        'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-    ]);
-
-    // Update data utama mobil
-    $car->update([
-        'merk' => $request->merk,
-        'model' => $request->model,
-        'deskripsi' => $request->deskripsi
-    ]);
-
-    // Update gambar
-    if ($request->hasFile('images')) {
-        // Hapus gambar lama (opsional)
-        $oldImages = DB::table('car_gallerys')->where('car_id', $car->id)->get();
-        foreach ($oldImages as $oldImage) {
-            Storage::disk('public')->delete($oldImage->image);
-        }
-        DB::table('car_gallerys')->where('car_id', $car->id)->delete();
-
-        // Upload gambar baru
-        foreach ($request->file('images') as $image) {
-            $path = $image->store('uploads', 'public');
-            DB::table('car_gallerys')->insert([
-                'car_id' => $car->id,
-                'image' => $path,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-        }
-    }
-
-    // Update detail mobil
-    $existingDetails = DB::table('car_details')->where('car_id', $car->id)->pluck('id')->toArray();
-    $updatedDetailIds = [];
-
-    if ($request->has('details')) {
-        foreach ($request->details as $detail) {
-            if (isset($detail['id']) && in_array($detail['id'], $existingDetails)) {
-                // Update detail yang ada
-                DB::table('car_details')->where('id', $detail['id'])->update([
-                    'bahan_bakar' => $detail['bahan_bakar'],
-                    'transmisi' => $detail['transmisi'],
-                    'fitur' => $detail['fitur'],
-                    'stok' => $detail['stok'],
-                    'warna' => $detail['warna'],
-                    'updated_at' => now()
-                ]);
-                $updatedDetailIds[] = $detail['id'];
-            } else {
-                // Tambahkan detail baru
-                DB::table('car_details')->insert([
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('uploads', 'public');
+                DB::table('car_gallerys')->insert([
                     'car_id' => $car->id,
-                    'bahan_bakar' => $detail['bahan_bakar'],
-                    'transmisi' => $detail['transmisi'],
-                    'fitur' => $detail['fitur'],
-                    'stok' => $detail['stok'],
-                    'warna' => $detail['warna'],
+                    'image' => $path,
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
             }
         }
-    }
 
-    // Hapus detail yang tidak ada di form
-    $toDelete = array_diff($existingDetails, $updatedDetailIds);
-    if (!empty($toDelete)) {
-        DB::table('car_details')->whereIn('id', $toDelete)->delete();
-    }
+        $existingDetails = DB::table('car_details')->where('car_id', $car->id)->pluck('id')->toArray();
+        $updatedDetailIds = [];
 
-    return redirect()->route('cars.index')->with('success', 'Car updated successfully.');
-}
+        if ($request->has('details')) {
+            foreach ($request->details as $detail) {
+                if (isset($detail['id']) && in_array($detail['id'], $existingDetails)) {
+                    DB::table('car_details')->where('id', $detail['id'])->update([
+                        'bahan_bakar' => $detail['bahan_bakar'],
+                        'transmisi' => $detail['transmisi'],
+                        'fitur' => $detail['fitur'],
+                        'stok' => $detail['stok'],
+                        'warna' => $detail['warna'],
+                        'price' => $detail['price'],
+                        'updated_at' => now()
+                    ]);
+                    $updatedDetailIds[] = $detail['id'];
+                } else {
+                    DB::table('car_details')->insert([
+                        'car_id' => $car->id,
+                        'bahan_bakar' => $detail['bahan_bakar'],
+                        'transmisi' => $detail['transmisi'],
+                        'fitur' => $detail['fitur'],
+                        'stok' => $detail['stok'],
+                        'warna' => $detail['warna'],
+                        'price' => $detail['price'],
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                }
+            }
+        }
+
+        $toDelete = array_diff($existingDetails, $updatedDetailIds);
+        if (!empty($toDelete)) {
+            DB::table('car_details')->whereIn('id', $toDelete)->delete();
+        }
+
+        return redirect()->route('cars.index')->with('success', 'Car updated successfully.');
+    }
 
 
 
