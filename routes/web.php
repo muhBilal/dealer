@@ -20,7 +20,6 @@ Route::resource('dashboard/promos', PromoController::class);
 
 Route::get('/get-car-detail-price/{id}', [PromoController::class, 'getDetailPrice']);
 
-
 Route::get('/dashboard', function () {
     return view('dashboard.index');
 })->name('dashboard');
